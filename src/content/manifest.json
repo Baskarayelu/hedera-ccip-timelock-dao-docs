@@ -1,0 +1,28 @@
+{
+  "groups": [
+    { "id": "getting-started", "title": "Getting started" },
+    { "id": "guide", "title": "Guide" },
+    { "id": "extend", "title": "Extend" },
+    { "id": "reference", "title": "Reference" }
+  ],
+  "pages": [
+    { "group": "getting-started", "slug": "introduction", "file": "README.md", "to": "Quick start", "title": "Introduction" },
+    { "group": "getting-started", "slug": "quick-start", "file": "README.md", "from": "Quick start", "to": "Deploy your own DAO" },
+    { "group": "guide", "slug": "how-it-works", "file": "README.md", "from": "How it works", "to": "Project layout" },
+    { "group": "guide", "slug": "architecture", "file": "docs/architecture.md" },
+    { "group": "guide", "slug": "wrap-to-vote", "file": "docs/wrap-to-vote.md" },
+    { "group": "guide", "slug": "frontend", "file": "docs/frontend.md" },
+    { "group": "extend", "slug": "deploy", "file": "README.md", "from": "Deploy your own DAO", "to": "How it works" },
+    { "group": "extend", "slug": "project-layout", "file": "README.md", "from": "Project layout", "to": "Commands" },
+    { "group": "extend", "slug": "commands", "file": "README.md", "from": "Commands", "to": "Docs" },
+    { "group": "extend", "slug": "gotchas", "file": "docs/gotchas.md" },
+    { "group": "reference", "slug": "proofs", "file": "PROOFS.md" },
+    { "group": "reference", "slug": "costs", "file": "docs/costs.md" },
+    { "group": "reference", "slug": "threat-model", "file": "docs/threat-model.md" }
+  ],
+  "elsewhere": [
+    { "file": "README.md", "firstNodeOnly": true, "shownOn": "home", "reason": "the README title is the home page title" },
+    { "file": "README.md", "from": "Docs", "to": "Licence", "shownOn": "nowhere", "reason": "a list of the doc pages, which the sidebar replaces" },
+    { "file": "README.md", "from": "Licence", "shownOn": "footer", "reason": "the licence line is the site footer" }
+  ]
+}

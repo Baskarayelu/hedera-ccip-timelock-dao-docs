@@ -1,0 +1,18 @@
+{
+  "repo": "Baskarayelu/hedera-ccip-timelock-dao",
+  "ref": "main",
+  "commit": "1e2e1fce6f23597ef8f15f0bd05e507734e57975",
+  "files": {
+    "docs/architecture.md": "f92f841ef4bb8c1c05849417e337406ae4b0918e39848be36afb1d3c058f8558",
+    "docs/costs.md": "d706249585cc1d199b302f861bb883546f493245848a7a48ee434686887449d4",
+    "docs/frontend.md": "c1b0d73d22b08e13865fe7ff04595cd74ba31446cfe9523511308f7c62a0b4ac",
+    "docs/gotchas.md": "57d95841b865110172edc5d708872e1f689a7b18285b16f0b8df2930ec96e46a",
+    "docs/img/proposal-done.jpg": "87b08884dbae7e397c595573bd38ed85651af71f9c931d962495349ada907b37",
+    "docs/img/proposals.jpg": "d8a0c493d20d4d3cc6d8997a7070f5dc73e8860168205084fcabfa2038efa905",
+    "docs/img/voting-power.jpg": "c4ce9a3dc17c5df59896f8ed5e4f8b4be06fc00a8d82965281a498baa2741f68",
+    "docs/threat-model.md": "978195026d26beaa4c846ee1ed3c8c2997bac54186381a15546638f5a0fb458e",
+    "docs/wrap-to-vote.md": "d13a3439d2a9f67831b6e154c15f40e45f36877807f5e0cb1ae9494c57904700",
+    "PROOFS.md": "28aec74d169eff38ceb6f95ac79ee40eb7e80347837b65a7226f544e2841de2d",
+    "README.md": "acc8e21b79c94832cf44e2a3ae179a5e21783e7cfbf23b3a12da9bf0e70863b0"
+  }
+}
