@@ -23,6 +23,7 @@ const views = [
   { name: 'home', path: '/' },
   { name: 'content-architecture', path: '/guide/architecture' },
   { name: 'proofs', path: '/reference/proofs' },
+  { name: 'agents', path: '/reference/agents' },
   { name: 'search-open', path: '/guide/architecture', action: 'search', viewportOnly: true },
   { name: 'drawer-open', path: '/guide/architecture', action: 'drawer', viewportOnly: true, phoneOnly: true },
   { name: 'toc-open', path: '/guide/architecture', action: 'toc', viewportOnly: true, phoneOnly: true },
