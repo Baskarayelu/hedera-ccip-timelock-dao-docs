@@ -1256,3 +1256,9 @@ kbd {
 [role='dialog'] input:focus-visible {
   outline: none;
 }
+/* Shiki's GitHub themes colour comments #6A737D, under 4.5:1 on the code background in
+   both themes. Same token, darker in light and lighter in dark. */
+.doc-body [style*='--shiki-light:#6A737D'] {
+  --shiki-light: #57606a !important;
+  --shiki-dark: #a3acb7 !important;
+}
