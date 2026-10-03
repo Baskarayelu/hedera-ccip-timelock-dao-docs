@@ -8,3 +8,5 @@ public/source/
 next-env.d.ts
 .DS_Store
 screens/
+.vercel
+.env*
