@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { ComponentProps, ReactNode } from 'react';
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import { LinkIcon } from './icons';
-import { Mermaid } from './mermaid';
+import { Diagram } from './diagram';
 
 function Anchor({ href = '', children, ...rest }: ComponentProps<'a'>) {
   if (href.startsWith('/') || href.startsWith('#')) {
@@ -63,7 +63,7 @@ const components = {
     // eslint-disable-next-line @next/next/no-img-element
     <img alt={alt} {...props} />
   ),
-  'mermaid-diagram': ({ children }: { children?: ReactNode }) => <Mermaid chart={textOf(children)} />,
+  'mermaid-diagram': ({ children, 'data-hash': hash }: { children?: ReactNode; 'data-hash': string }) => <Diagram hash={hash} chart={textOf(children)} />,
 } as unknown as Components;
 
 export function Markdown({ tree }: { tree: Root }) {

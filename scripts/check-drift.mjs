@@ -3,6 +3,7 @@
 // requires each heading, paragraph, list item, table cell and code line of the mapped
 // source section to appear, in order, in the page's built HTML. It also checks the home
 // page facts, the footer, the images and that the site was built from the locked commit.
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { toString } from 'mdast-util-to-string';
@@ -17,6 +18,9 @@ const OUT = join(ROOT, 'out');
 const REPO = join(ROOT, '.source', 'repo');
 const manifest = JSON.parse(readFileSync(join(ROOT, 'src/content/manifest.json'), 'utf8'));
 const lock = JSON.parse(readFileSync(join(ROOT, 'source.lock.json'), 'utf8'));
+const diagrams = JSON.parse(readFileSync(join(ROOT, 'src/content/diagrams/index.json'), 'utf8'));
+const knownIssues = JSON.parse(readFileSync(join(ROOT, 'src/content/source-issues.json'), 'utf8')).diagrams;
+let checkedDiagrams = 0;
 
 const problems = [];
 const norm = (s) => s.replace(/\s+/g, ' ').trim();
@@ -117,6 +121,19 @@ for (const spec of manifest.pages) {
     if (!built) problems.push(`${label}: image "${img.alt.slice(0, 60)}" is missing`);
     else if (!existsSync(join(OUT, built.getAttribute('src')))) problems.push(`${label}: image file ${built.getAttribute('src')} is not in the build`);
   }
+  // Diagrams: each one on the page, drawn from exactly this source (sha256), in both themes.
+  visit({ type: 'root', children: nodes }, 'code', (n) => {
+    if (n.lang !== 'mermaid') return;
+    checkedDiagrams++;
+    const hash = createHash('sha256').update(n.value).digest('hex');
+    const fig = body.querySelector(`figure[data-diagram="${hash}"]`);
+    if (!fig) return problems.push(`${label}: diagram ${hash.slice(0, 16)} from line ${n.position.start.line} is missing`);
+    if (knownIssues[hash]) {
+      if (!fig.querySelector('[data-diagram-error]')) problems.push(`${label}: diagram ${hash.slice(0, 16)} is a known source issue but is not marked as one`);
+    } else if (fig.querySelectorAll('.diagram-svg svg').length !== 2 || !diagrams.diagrams[hash]?.themes?.dark) {
+      problems.push(`${label}: diagram ${hash.slice(0, 16)} is not drawn in both themes`);
+    }
+  });
   if (!norm(doc.querySelector('.site-footer')?.text ?? '').includes(licence)) problems.push(`${label}: footer does not carry the README licence line`);
   if (!doc.querySelector('.site-footer')?.text.includes(lock.commit.slice(0, 7))) problems.push(`${label}: footer does not name the locked commit`);
 }
@@ -157,4 +174,4 @@ if (problems.length) {
   console.error(`\n✖ Drift check failed (${problems.length}):\n  ${problems.join('\n  ')}\n`);
   process.exit(1);
 }
-console.log(`Drift check passed: ${checkedPages} pages and the home page match ${lock.repo}@${lock.commit.slice(0, 7)} (${checkedUnits} text units in order).`);
+console.log(`Drift check passed: ${checkedPages} pages and the home page match ${lock.repo}@${lock.commit.slice(0, 7)} (${checkedUnits} text units in order, ${checkedDiagrams} diagrams by source hash${Object.keys(knownIssues).length ? `, ${Object.keys(knownIssues).length} a known source issue` : ''}).`);

@@ -8,13 +8,14 @@
     "node": ">=20.18.3"
   },
   "scripts": {
-    "sync": "node scripts/sync.mjs",
+    "sync": "node scripts/sync.mjs && node scripts/fetch-source.mjs && node scripts/render-diagrams.mjs",
     "fetch-source": "node scripts/fetch-source.mjs",
     "dev": "node scripts/fetch-source.mjs && next dev",
     "build": "node scripts/fetch-source.mjs && next build && node scripts/check-drift.mjs && node scripts/check-links.mjs",
     "check:drift": "node scripts/check-drift.mjs",
     "check:links": "node scripts/check-links.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "diagrams": "node scripts/render-diagrams.mjs"
   },
   "dependencies": {
     "fumadocs-core": "15.8.5",
@@ -23,7 +24,6 @@
     "hast-util-to-jsx-runtime": "2.3.6",
     "image-size": "2.0.4",
     "mdast-util-to-string": "4.0.0",
-    "mermaid": "12.1.0",
     "next": "15.5.27",
     "next-themes": "0.4.6",
     "node-html-parser": "9.0.4",
@@ -36,10 +36,12 @@
     "unist-util-visit": "5.1.0"
   },
   "devDependencies": {
+    "@fontsource/ibm-plex-sans": "5.3.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "26.6.4",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "mermaid": "12.1.0",
     "playwright": "1.63.0",
     "postcss": "8.5.28",
     "tailwindcss": "4.3.3",

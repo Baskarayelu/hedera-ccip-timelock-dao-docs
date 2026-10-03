@@ -18,7 +18,10 @@ import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
 import { ELSEWHERE, GROUPS, PAGES, type GroupId, type PageSpec } from '@/content/manifest';
 import config from '../../docs.config.json';
+import diagramIndex from '@/content/diagrams/index.json';
+import sourceIssues from '@/content/source-issues.json';
 import lock from '../../source.lock.json';
+import { createHash } from 'node:crypto';
 
 const REPO_DIR = join(process.cwd(), '.source', 'repo');
 export const SOURCE = { repo: config.repo, ref: config.ref, commit: lock.commit as string, short: (lock.commit as string).slice(0, 7) };
@@ -211,13 +214,48 @@ function structured(nodes: RootContent[], slugOf: (h: Heading) => string): Struc
   return data;
 }
 
-/** Diagrams become <mermaid-diagram> elements holding their source; the browser draws them. */
-const mermaidHandler = (_state: unknown, node: { value: string }): Element => ({
-  type: 'element',
-  tagName: 'mermaid-diagram',
-  properties: {},
-  children: [{ type: 'text', value: node.value }],
-});
+// ---------- diagrams ----------
+
+interface DiagramEntry {
+  sources: string[];
+  error?: string;
+  themes: Partial<Record<'light' | 'dark', { file: string; width: number; height: number }>>;
+}
+const DIAGRAMS = (diagramIndex as { commit: string; diagrams: Record<string, DiagramEntry> }).diagrams;
+const KNOWN_ISSUES = (sourceIssues as { diagrams: Record<string, string> }).diagrams;
+
+let diagramsChecked = false;
+/** Diagrams are drawn ahead of time by `npm run diagrams`, keyed by the sha256 of their source. */
+function checkDiagramIndex() {
+  if (diagramsChecked) return;
+  diagramsChecked = true;
+  if ((diagramIndex as { commit: string }).commit !== SOURCE.commit) {
+    throw new SourceError(`src/content/diagrams/ was drawn from ${(diagramIndex as { commit: string }).commit.slice(0, 7)}, not the pinned ${SOURCE.short}. Run \`npm run diagrams\` and commit the result.`);
+  }
+  for (const [hash, note] of Object.entries(KNOWN_ISSUES)) {
+    if (!DIAGRAMS[hash]?.error) throw new SourceError(`source-issues.json lists diagram ${hash.slice(0, 16)} (${note.slice(0, 60)}…), but it now renders or no longer exists. Remove the entry.`);
+  }
+}
+
+function diagramElement(fromFile: string, code: string): Element {
+  checkDiagramIndex();
+  const hash = createHash('sha256').update(code).digest('hex');
+  const entry = DIAGRAMS[hash];
+  if (!entry) throw new SourceError(`A diagram in ${fromFile} has no drawing (${hash.slice(0, 16)}). Run \`npm run diagrams\`.`);
+  if (entry.error && !KNOWN_ISSUES[hash]) {
+    throw new SourceError(`A diagram in ${fromFile} does not parse: ${entry.error}. Report it to the template, or list it in src/content/source-issues.json.`);
+  }
+  return {
+    type: 'element',
+    tagName: 'mermaid-diagram',
+    properties: { dataHash: hash },
+    children: [{ type: 'text', value: code }],
+  };
+}
+
+export function getDiagram(hash: string) {
+  return DIAGRAMS[hash];
+}
 
 async function toHast(fromFile: string, nodes: RootContent[], depthShift: number, slugOf: (h: Heading) => string): Promise<HastRoot> {
   const root: Root = { type: 'root', children: structuredClone(nodes) };
@@ -250,7 +288,7 @@ async function toHast(fromFile: string, nodes: RootContent[], depthShift: number
     }
   });
   const processor = unified()
-    .use(remarkRehype, { handlers: { mermaidBlock: mermaidHandler } } as RemarkRehypeOptions)
+    .use(remarkRehype, { handlers: { mermaidBlock: (_state: unknown, node: { value: string }) => diagramElement(fromFile, node.value) } } as RemarkRehypeOptions)
     .use(rehypeCode, {
       themes: { light: 'github-light', dark: 'github-dark' },
       defaultLanguage: 'text',

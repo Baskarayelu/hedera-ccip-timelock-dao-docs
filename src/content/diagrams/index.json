@@ -1,0 +1,63 @@
+{
+  "commit": "1e2e1fce6f23597ef8f15f0bd05e507734e57975",
+  "diagrams": {
+    "0ef488054afeda6bcf24866959fd97071dbd290e5525d381e9ea04e3fd787365": {
+      "sources": [
+        "docs/architecture.md:7"
+      ],
+      "themes": {
+        "light": {
+          "file": "0ef488054afeda6b-light.svg",
+          "width": 3214,
+          "height": 471
+        },
+        "dark": {
+          "file": "0ef488054afeda6b-dark.svg",
+          "width": 3214,
+          "height": 471
+        }
+      }
+    },
+    "2d0af3d5e4f57c2ea88a5beba8d42c31a9048975672b55d76f75e71daa32db8f": {
+      "sources": [
+        "docs/architecture.md:52"
+      ],
+      "themes": {
+        "light": {
+          "file": "2d0af3d5e4f57c2e-light.svg",
+          "width": 1253,
+          "height": 1203
+        },
+        "dark": {
+          "file": "2d0af3d5e4f57c2e-dark.svg",
+          "width": 1253,
+          "height": 1203
+        }
+      }
+    },
+    "9b12509eea4f17a87482c74fbbe45fe9246b3cc66677e64b5d572bcdb74c543a": {
+      "sources": [
+        "docs/architecture.md:90"
+      ],
+      "themes": {
+        "light": {
+          "file": "9b12509eea4f17a8-light.svg",
+          "width": 1038,
+          "height": 484
+        },
+        "dark": {
+          "file": "9b12509eea4f17a8-dark.svg",
+          "width": 1038,
+          "height": 484
+        }
+      }
+    },
+    "eb4b376e8b5d4c5a5cb6de0a9249f18fe5a681f4f82a8a7f6f29ee1d6e5eb898": {
+      "sources": [
+        "README.md:82"
+      ],
+      "themes": {},
+      "error": "Parse error on line 9: ...ver CCIP (fee quoted, capped)  T->>E: C"
+    }
+  }
+}
