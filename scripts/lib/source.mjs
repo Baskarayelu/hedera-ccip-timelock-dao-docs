@@ -13,7 +13,7 @@ export const REPO_DIR = join(SOURCE_DIR, 'repo');
 
 /** The files the site is built from. Everything else in the repo is only linked to. */
 export function isTracked(path) {
-  return path === 'README.md' || path === 'PROOFS.md' || /^docs\/[^/]+\.md$/.test(path) || /^docs\/img\/[^/]+$/.test(path);
+  return path === 'README.md' || path === 'PROOFS.md' || path === 'AGENTS.md' || /^docs\/[^/]+\.md$/.test(path) || /^docs\/img\/[^/]+$/.test(path);
 }
 
 export function fail(message) {

@@ -1,6 +1,4 @@
 {
   "about": "Problems in the pinned source that the site shows as they are, instead of failing the build. Each entry is reported to the template; remove it when the fix is pinned. The build fails on any diagram error not listed here, and on any entry that no longer matches a failing diagram.",
-  "diagrams": {
-    "eb4b376e8b5d4c5a5cb6de0a9249f18fe5a681f4f82a8a7f6f29ee1d6e5eb898": "README.md, How it works: mermaid reads ';' inside a sequence-diagram message as a line break, so 'G->>T: run actions; send Base calls over CCIP (fee quoted, capped)' does not parse. Reported to the template on 2026-10-03."
-  }
+  "diagrams": {}
 }

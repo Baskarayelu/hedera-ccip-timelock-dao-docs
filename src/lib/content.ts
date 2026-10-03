@@ -6,7 +6,7 @@ import { join, posix } from 'node:path';
 import GithubSlugger from 'github-slugger';
 import type { Element, Root as HastRoot } from 'hast';
 import { imageSize } from 'image-size';
-import type { Code, Heading, Link, Image, Root, RootContent, Table } from 'mdast';
+import type { Code, Heading, Link, Image, Paragraph, Root, RootContent, Table } from 'mdast';
 import { toString } from 'mdast-util-to-string';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
@@ -56,6 +56,7 @@ interface ParsedFile {
   tree: Root;
   /** slug of every heading, in document order, the way GitHub assigns them. */
   slugs: Map<Heading, string>;
+  raw: string;
 }
 
 const parsed = new Map<string, ParsedFile>();
@@ -65,7 +66,8 @@ function parseFile(path: string): ParsedFile {
   if (hit) return hit;
   const abs = join(REPO_DIR, path);
   if (!existsSync(abs)) throw new SourceError(`${path} is not in the pinned source. Run \`npm run fetch-source\`.`);
-  const tree = unified().use(remarkParse).use(remarkGfm).parse(readFileSync(abs, 'utf8')) as Root;
+  const raw = readFileSync(abs, 'utf8');
+  const tree = unified().use(remarkParse).use(remarkGfm).parse(raw) as Root;
   visit(tree, 'html', (node) => {
     throw new SourceError(`${path}:${node.position?.start.line} has raw HTML (${node.value.slice(0, 40)}), which the site does not render.`);
   });
@@ -74,9 +76,21 @@ function parseFile(path: string): ParsedFile {
   visit(tree, 'heading', (h) => {
     slugs.set(h, slugger.slug(toString(h)));
   });
-  const file = { path, tree, slugs };
+  const file = { path, tree, slugs, raw };
   parsed.set(path, file);
   return file;
+}
+
+/** Top-level nodes that ELSEWHERE takes out of whatever page they fall in (by `nodeMatches`). */
+function excludedNodes(file: ParsedFile): Set<RootContent> {
+  const out = new Set<RootContent>();
+  for (const x of ELSEWHERE.filter((e) => e.file === file.path && e.nodeMatches)) {
+    const re = new RegExp(x.nodeMatches!);
+    const hits = file.tree.children.filter((n) => re.test(file.raw.slice(n.position!.start.offset, n.position!.end.offset)));
+    if (hits.length === 0) throw new SourceError(`${file.path}: nothing matches ${x.nodeMatches} (${x.reason}). Update src/content/manifest.json.`);
+    hits.forEach((n) => out.add(n));
+  }
+  return out;
 }
 
 function headingIndex(file: ParsedFile, text: string): number {
@@ -318,6 +332,8 @@ async function buildPage(spec: PageSpec): Promise<DocPage> {
     nodes = nodes.slice(1);
   }
   if (!title) throw new SourceError(`${spec.file}: page ${spec.slug} has no title.`);
+  const excluded = excludedNodes(file);
+  nodes = nodes.filter((n) => !excluded.has(n));
 
   const slugOf = (h: Heading) => file.slugs.get(h)!;
   const hast = await toHast(spec.file, nodes, depthShift, slugOf);
@@ -363,8 +379,14 @@ function checkCoverage() {
   for (const path of files) {
     const file = parseFile(path);
     const owner = new Array<string | undefined>(file.tree.children.length);
+    // Nodes taken out by pattern belong to their ELSEWHERE entry, whatever page range they sit in.
+    const excluded = excludedNodes(file);
+    file.tree.children.forEach((n, i) => {
+      if (excluded.has(n)) owner[i] = 'excluded by pattern';
+    });
     const claim = (start: number, end: number, who: string) => {
       for (let i = start; i < end; i++) {
+        if (excluded.has(file.tree.children[i]!)) continue;
         if (owner[i]) throw new SourceError(`${path} node ${i} is claimed by both ${owner[i]} and ${who}.`);
         owner[i] = who;
       }
@@ -374,6 +396,7 @@ function checkCoverage() {
       claim(spec.title && !spec.from && file.tree.children[0]?.type === 'heading' ? s + 1 : s, e, `page ${spec.slug}`);
     }
     for (const x of ELSEWHERE.filter((x) => x.file === path)) {
+      if (x.nodeMatches) continue;
       if (x.firstNodeOnly) claim(0, 1, x.shownOn);
       else claim(...range(file, x.from, x.to), x.shownOn);
     }
@@ -405,9 +428,13 @@ let factsPromise: Promise<HomeFacts> | undefined;
 export function getHomeFacts(): Promise<HomeFacts> {
   factsPromise ??= (async () => {
     const readme = parseFile('README.md');
-    const [h1, para] = readme.tree.children;
+    const h1 = readme.tree.children[0];
     if (h1?.type !== 'heading' || h1.depth !== 1) throw new SourceError('README.md does not start with an H1.');
-    if (para?.type !== 'paragraph') throw new SourceError('README.md has no paragraph under its title.');
+    // The first paragraph under the title that starts with text (a badge or link line does not).
+    const para = readme.tree.children.find((n, i): n is Paragraph => i > 0 && n.type === 'paragraph' && n.children[0]?.type === 'text');
+    if (!para || readme.tree.children.slice(1, readme.tree.children.indexOf(para)).some((n) => n.type === 'heading')) {
+      throw new SourceError('README.md has no paragraph of text under its title.');
+    }
 
     const [qs, qe] = range(readme, 'Quick start', 'How it works');
     let scaffoldCommand: string | undefined;

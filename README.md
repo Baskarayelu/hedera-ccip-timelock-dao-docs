@@ -2,13 +2,13 @@
 
 The documentation site for [hedera-ccip-timelock-dao](https://github.com/Baskarayelu/hedera-ccip-timelock-dao), a Scaffold-HBAR template. Live at https://hedera-ccip-timelock-dao-docs.vercel.app.
 
-This repository holds no documentation text. Every page is built from the template's `README.md`, `docs/` and `PROOFS.md` at a pinned commit, so the site cannot say anything the template does not.
+This repository holds no documentation text. Every page is built from the template's `README.md`, `docs/`, `PROOFS.md` and `AGENTS.md` at a pinned commit, so the site cannot say anything the template does not.
 
 ## How the content gets here
 
 - `docs.config.json` names the template repository and the ref to follow (a branch or tag).
 - `source.lock.json` records the commit that ref pointed to and a sha256 of every source file. Only `npm run sync` writes it.
-- `src/content/manifest.json` says which part of which file becomes which page, and where the few sections that are not pages go (the README title is the home page title, its licence line is the footer, its list of docs is replaced by the sidebar).
+- `src/content/manifest.json` says which part of which file becomes which page, and where the few sections that are not pages go (the README title is the home page title, its licence line is the footer, its list of docs is replaced by the sidebar, and its badge line, which links this site and the live demo, by the header).
 
 `npm run build` runs three gates around `next build`, and any of them fails the build:
 

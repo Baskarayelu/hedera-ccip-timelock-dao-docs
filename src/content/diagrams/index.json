@@ -1,63 +1,73 @@
 {
-  "commit": "1e2e1fce6f23597ef8f15f0bd05e507734e57975",
+  "commit": "cacaf0a88c1a9de6d69079096bbfaa09ab794650",
   "diagrams": {
-    "0ef488054afeda6bcf24866959fd97071dbd290e5525d381e9ea04e3fd787365": {
+    "a4e8dbc70ea957aafb2e3798cbd2ecd78da16377c77ad3e012711cfa0ecd7bd8": {
       "sources": [
         "docs/architecture.md:7"
       ],
       "themes": {
         "light": {
-          "file": "0ef488054afeda6b-light.svg",
-          "width": 3214,
-          "height": 471
+          "file": "a4e8dbc70ea957aa-light.svg",
+          "width": 491,
+          "height": 2182
         },
         "dark": {
-          "file": "0ef488054afeda6b-dark.svg",
-          "width": 3214,
-          "height": 471
+          "file": "a4e8dbc70ea957aa-dark.svg",
+          "width": 491,
+          "height": 2182
         }
       }
     },
-    "2d0af3d5e4f57c2ea88a5beba8d42c31a9048975672b55d76f75e71daa32db8f": {
+    "b78ccd712361f2fd391f63e9b079ffd1f25d1aebd5eb882986c71f59e786e5da": {
       "sources": [
         "docs/architecture.md:52"
       ],
       "themes": {
         "light": {
-          "file": "2d0af3d5e4f57c2e-light.svg",
-          "width": 1253,
+          "file": "b78ccd712361f2fd-light.svg",
+          "width": 958,
           "height": 1203
         },
         "dark": {
-          "file": "2d0af3d5e4f57c2e-dark.svg",
-          "width": 1253,
+          "file": "b78ccd712361f2fd-dark.svg",
+          "width": 958,
           "height": 1203
         }
       }
     },
-    "9b12509eea4f17a87482c74fbbe45fe9246b3cc66677e64b5d572bcdb74c543a": {
+    "12dece067beb8de4ae149012588a44dda206680e57e4dcfc188781ab31363b13": {
       "sources": [
-        "docs/architecture.md:90"
+        "docs/architecture.md:88"
       ],
       "themes": {
         "light": {
-          "file": "9b12509eea4f17a8-light.svg",
-          "width": 1038,
-          "height": 484
+          "file": "12dece067beb8de4-light.svg",
+          "width": 770,
+          "height": 551
         },
         "dark": {
-          "file": "9b12509eea4f17a8-dark.svg",
-          "width": 1038,
-          "height": 484
+          "file": "12dece067beb8de4-dark.svg",
+          "width": 770,
+          "height": 551
         }
       }
     },
-    "eb4b376e8b5d4c5a5cb6de0a9249f18fe5a681f4f82a8a7f6f29ee1d6e5eb898": {
+    "d807f06f7858c1ee69467799d62b304525e618ecb921b2f2cd03f0b301185189": {
       "sources": [
-        "README.md:82"
+        "README.md:84"
       ],
-      "themes": {},
-      "error": "Parse error on line 9: ...ver CCIP (fee quoted, capped)  T->>E: C"
+      "themes": {
+        "light": {
+          "file": "d807f06f7858c1ee-light.svg",
+          "width": 928,
+          "height": 647
+        },
+        "dark": {
+          "file": "d807f06f7858c1ee-dark.svg",
+          "width": 928,
+          "height": 647
+        }
+      }
     }
   }
 }

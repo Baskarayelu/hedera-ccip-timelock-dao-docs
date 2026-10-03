@@ -24,6 +24,8 @@ export interface Elsewhere {
   from?: string;
   to?: string;
   firstNodeOnly?: boolean;
+  /** Top-level nodes whose markdown source matches this pattern, wherever they are in the file. */
+  nodeMatches?: string;
   shownOn: 'home' | 'footer' | 'nowhere';
   reason: string;
 }

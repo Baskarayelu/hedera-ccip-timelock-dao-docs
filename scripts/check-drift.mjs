@@ -32,6 +32,12 @@ function tree(path) {
   if (!trees.has(path)) trees.set(path, unified().use(remarkParse).use(remarkGfm).parse(readFileSync(join(REPO, path), 'utf8')));
   return trees.get(path);
 }
+// Top-level nodes the manifest takes out of pages by pattern (for example a badge line).
+function excluded(path) {
+  const raw = readFileSync(join(REPO, path), 'utf8');
+  const res = manifest.elsewhere.filter((e) => e.file === path && e.nodeMatches).map((e) => new RegExp(e.nodeMatches));
+  return new Set(tree(path).children.filter((n) => res.some((re) => re.test(raw.slice(n.position.start.offset, n.position.end.offset)))));
+}
 function slice(path, from, to) {
   const nodes = tree(path).children;
   const at = (text) => {
@@ -103,6 +109,8 @@ for (const spec of manifest.pages) {
     title ??= toString(first);
     nodes = nodes.slice(1);
   }
+  const out = excluded(spec.file);
+  nodes = nodes.filter((n) => !out.has(n));
   const h1 = doc.querySelector('h1.doc-title');
   if (!h1 || norm(h1.text) !== norm(title)) problems.push(`${label}: title is "${h1?.text}", source says "${title}"`);
   const body = doc.querySelector('[data-doc-body]');
@@ -153,7 +161,8 @@ if (home) {
   const readme = tree('README.md').children;
   const fact = (name) => norm(home.querySelector(`[data-fact="${name}"]`)?.text ?? '');
   if (norm(home.querySelector('h1')?.text ?? '') !== toString(readme[0])) problems.push('home: title differs from the README H1');
-  if (fact('lede') !== norm(toString(readme[1]))) problems.push('home: first paragraph differs from the README');
+  const lede = readme.find((n, i) => i > 0 && n.type === 'paragraph' && n.children[0]?.type === 'text');
+  if (!lede || fact('lede') !== norm(toString(lede))) problems.push('home: first paragraph differs from the README');
   const qs = slice('README.md', 'Quick start', 'How it works');
   const command = qs.filter((n) => n.type === 'code').flatMap((n) => n.value.split('\n')).find((l) => l.startsWith('npx create-scaffold-hbar'));
   if (!command || fact('command') !== command) problems.push(`home: scaffold command "${fact('command')}" differs from the README's "${command}"`);
