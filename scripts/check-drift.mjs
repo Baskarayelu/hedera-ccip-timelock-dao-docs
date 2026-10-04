@@ -175,6 +175,12 @@ if (home) {
     if (toString(r.children[0]) === 'Total with the default funding') deploy ??= toString(r.children.at(-1)).match(/about ([\d.]+)/)?.[1];
   });
   if (!take || fact('take-part') !== `about ${take} HBAR`) problems.push(`home: take-part cost "${fact('take-part')}" differs from docs/costs.md (${take})`);
+  let takeNote;
+  visit(tree('docs/costs.md'), 'paragraph', (p) => {
+    const m = toString(p).match(/taking part once \(([^)]+)\) spends about [\d.]+ HBAR(?:, ([^.(]+?))?\s*(?:\(|\.)/);
+    takeNote ??= m ? (m[2] ? `${m[1]}; ${m[2].trim()}` : m[1]) : undefined;
+  });
+  if (fact('take-part-note') !== takeNote) problems.push(`home: take-part note "${fact('take-part-note')}" differs from docs/costs.md ("${takeNote}")`);
   if (!deploy || fact('deploy') !== `about ${deploy} HBAR`) problems.push(`home: deploy cost "${fact('deploy')}" differs from docs/costs.md (${deploy})`);
   if (/\$\s?\d/.test(home.querySelector('main')?.text ?? '')) problems.push('home: shows a USD figure; costs are HBAR only');
 }

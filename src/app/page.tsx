@@ -76,8 +76,8 @@ export default async function Home() {
           <span className="cost-value" data-fact="take-part">
             about {facts.takePart.hbar} HBAR
           </span>
-          <span className="cost-note">
-            {facts.takePart.steps}; {facts.takePart.withAssociation} with an association
+          <span className="cost-note" data-fact="take-part-note">
+            {facts.takePart.qualifier ? `${facts.takePart.steps}; ${facts.takePart.qualifier}` : facts.takePart.steps}
           </span>
         </div>
         <div className="cost">

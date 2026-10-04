@@ -8,6 +8,7 @@
 //   hashscan.io   → Hedera testnet mirror node (contract, transaction, schedule, token, account)
 //   ccip.chain.link/msg/<id> → the page, plus the CCIP explorer's message API
 //   repo.sourcify.dev/<chain>/<address> → the page, plus Sourcify's verified-contract API
+//   *.blockscout.com/tx|address/<id> → the page, plus Blockscout's API (tx succeeded; a contract at the address)
 // Basescan sits behind a Cloudflare bot challenge. A challenge or rate limit from Basescan
 // (and only Basescan) is logged as "not checkable from CI"; a 404 there still fails.
 // Links to localhost are instructions for the reader's own machine and are skipped.
@@ -147,6 +148,21 @@ async function checkExternal(url) {
     const r = await get(`https://sourcify.dev/server/v2/contract/${sourcify[1]}/${sourcify[2]}`);
     if (r.status !== 200) return { state: 'failed', note: `Sourcify API: ${describe(r)} (not verified)` };
     return { state: 'ok', note: 'verified on Sourcify' };
+  }
+  const blockscout = u.hostname.endsWith('blockscout.com') && u.pathname.match(/^\/(tx|address)\/(0x[0-9a-f]+)\/?$/i);
+  if (blockscout) {
+    // Blockscout serves its app for any path; its API knows whether the thing exists.
+    const kind = blockscout[1] === 'tx' ? 'transactions' : 'addresses';
+    const r = await get(`${u.origin}/api/v2/${kind}/${blockscout[2]}`);
+    let body = {};
+    try {
+      body = JSON.parse(r.text ?? '{}');
+    } catch {}
+    if (r.status !== 200) return { state: 'failed', note: `Blockscout API: ${describe(r)}` };
+    if (kind === 'transactions' && body.status !== 'ok') return { state: 'failed', note: `Blockscout: transaction status ${body.status}` };
+    // Any address answers 200, so an address link must at least point at a contract.
+    if (kind === 'addresses' && body.is_contract !== true) return { state: 'failed', note: 'Blockscout: no contract at this address' };
+    return { state: 'ok', note: kind === 'transactions' ? 'transaction succeeded' : `contract${body.is_verified ? `, verified as ${body.name}` : ''}` };
   }
   return { state: 'ok', note: describe(page) };
 }

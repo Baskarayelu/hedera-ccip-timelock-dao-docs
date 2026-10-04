@@ -416,7 +416,7 @@ export interface HomeFacts {
   lede: HastRoot;
   ledeText: string;
   scaffoldCommand: string;
-  takePart: { hbar: string; steps: string; withAssociation: string };
+  takePart: { hbar: string; steps: string; qualifier?: string };
   deploy: { hbar: string; label: string };
   liveDemoUrl: string | null;
   licence: HastRoot;
@@ -447,8 +447,10 @@ export function getHomeFacts(): Promise<HomeFacts> {
     let takePart: HomeFacts['takePart'] | undefined;
     let deploy: HomeFacts['deploy'] | undefined;
     visit(costs.tree, 'paragraph', (p) => {
-      const m = toString(p).match(/Setting up and taking part once \(([^)]+)\) spends about ([\d.]+) HBAR, or ([\d.]+) with an association/);
-      if (m && !takePart) takePart = { steps: m[1]!, hbar: m[2]!, withAssociation: m[3]! };
+      // "Setting up and taking part once (steps) spends about X HBAR, <qualifier>." The qualifier
+      // (for example "with or without the association step") is shown as the source words it.
+      const m = toString(p).match(/Setting up and taking part once \(([^)]+)\) spends about ([\d.]+) HBAR(?:, ([^.(]+?))?\s*(?:\(|\.)/);
+      if (m && !takePart) takePart = { steps: m[1]!, hbar: m[2]!, qualifier: m[3]?.trim() };
     });
     visit(costs.tree, 'tableRow', (row) => {
       const label = toString(row.children[0]!);
@@ -456,7 +458,7 @@ export function getHomeFacts(): Promise<HomeFacts> {
       const m = value.match(/^about ([\d.]+)$/);
       if (label === 'Total with the default funding' && m && !deploy) deploy = { hbar: m[1]!, label: label.toLowerCase() };
     });
-    if (!takePart) throw new SourceError('docs/costs.md no longer says "Setting up and taking part once (…) spends about X HBAR, or Y with an association". The home page cost strip reads it from there.');
+    if (!takePart) throw new SourceError('docs/costs.md no longer says "Setting up and taking part once (…) spends about X HBAR". The home page cost strip reads it from there.');
     if (!deploy) throw new SourceError('docs/costs.md has no "Total with the default funding | | about N" row. The home page cost strip reads it from there.');
 
     let liveDemoUrl: string | null = null;

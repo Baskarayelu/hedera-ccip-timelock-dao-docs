@@ -1,19 +1,19 @@
 {
   "repo": "Baskarayelu/hedera-ccip-timelock-dao",
-  "ref": "main",
-  "commit": "cacaf0a88c1a9de6d69079096bbfaa09ab794650",
+  "ref": "v1.0.0",
+  "commit": "e91011e073d6596224ac3180bedf91be00658e3c",
   "files": {
-    "AGENTS.md": "b27b1789986daff028366d2dac2ff66c1088ca7dcd8a2044c1aa99d9d4b567da",
-    "docs/architecture.md": "ea557ae57e1451cbb0e10f7582adea327ab2809b0a9d3d679b862ff9b8fa5d58",
-    "docs/costs.md": "d706249585cc1d199b302f861bb883546f493245848a7a48ee434686887449d4",
-    "docs/frontend.md": "c1b0d73d22b08e13865fe7ff04595cd74ba31446cfe9523511308f7c62a0b4ac",
-    "docs/gotchas.md": "57d95841b865110172edc5d708872e1f689a7b18285b16f0b8df2930ec96e46a",
+    "AGENTS.md": "c4d8784d3c869516fb8a1597995546cc0918347e0d9136be4af17ca1caf81cab",
+    "docs/architecture.md": "c335863931e9ee842e5a1539a171562ceafb002a7c41f245255e602c5d7a3740",
+    "docs/costs.md": "27deb2092298381e279ae040eb1034d65c8efa683e2103a17587c4319b7dddd3",
+    "docs/frontend.md": "f695d921e54d2a5f218553d4f1dfef2573147a019258ae8a8a23bc6ec5709afc",
+    "docs/gotchas.md": "6ba3eb24d2023bed8d15cf47560c23f0b642b13eb7f9a90019fd33d23bdcd17e",
     "docs/img/proposal-done.jpg": "87b08884dbae7e397c595573bd38ed85651af71f9c931d962495349ada907b37",
     "docs/img/proposals.jpg": "d8a0c493d20d4d3cc6d8997a7070f5dc73e8860168205084fcabfa2038efa905",
     "docs/img/voting-power.jpg": "c4ce9a3dc17c5df59896f8ed5e4f8b4be06fc00a8d82965281a498baa2741f68",
-    "docs/threat-model.md": "978195026d26beaa4c846ee1ed3c8c2997bac54186381a15546638f5a0fb458e",
+    "docs/threat-model.md": "9567c866916019a17fe0391217e056d40bd7ff1f309687746a242d56057f6bd7",
     "docs/wrap-to-vote.md": "d13a3439d2a9f67831b6e154c15f40e45f36877807f5e0cb1ae9494c57904700",
-    "PROOFS.md": "a733a13130fc79f08909f3b2c83cf8c129ac6b8e9bc34c1a39cc51ef8ff16ae6",
-    "README.md": "c3165ecccec3aa99d80d74358462b01f681cf1bb6b929a187e1d25160e43d6e4"
+    "PROOFS.md": "c892f5e979245fca270acbccf9aeb4f3b69e1cd05ca4866b53015eacb3249a64",
+    "README.md": "fcbf89909d97bca9017f500f90b68c4b8628f421da81c9bfba024e28e32547ec"
   }
 }
